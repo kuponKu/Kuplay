@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KuPlay</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+      padding-bottom: 60px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background: #1e90ff;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .brand { 
+      font-weight: bold; 
+      font-size: 25px;
+    }
+    
+    .wallet { 
+      display: flex; 
+      gap: 15px;
+      align-items: center; 
+    }
+    
+    .wallet-item {
+      display: flex; align-items: center;
+      background: rgba(255,255,255,0.3);
+      color: #333;
+      padding: 5px 10px;
+      border-radius: 15px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 13px;
+      transition: transform 0.1s;
+    }
+    
+    .wallet-item:hover { 
+      transform: scale(1.1); 
+    }
+    
+    .wallet-item img { 
+      width: 15px; 
+      height: 15px;
+      margin-right: 5px; 
+    }
+
+    .page { 
+      display: none;
+      padding: 20px 10px;
+      padding-bottom: 70px; 
+      min-height: 100vh;
+      box-sizing: border-box; 
+    }
+    
+    /* Gaya untuk profil di halaman game */
+    #profileInfo {
+        text-align: center;
+        margin: 20px 0;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #333;
+    }
+
+    #profileAvatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        cursor: pointer;
+        border: 3px solid #1e90ff;
+        box-shadow: 0 0 10px rgba(30, 144, 255, 0.5);
+        transition: transform 0.2s;
+    }
+
+    #profileAvatar:hover {
+        transform: scale(1.1);
+    }
+    
+    #profileName {
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    #profileId {
+        font-size: 0.8em;
+        color: #aaa;
+    }
+
+    #logoutBtn {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 0.9em;
+        margin-top: 10px;
+    }
+
+    #logoutBtn:hover {
+        background-color: #d32f2f;
+    }
+    
+    .games { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+      gap: 10px; 
+    }
+
+    .game-card {
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+      border-radius: 10px;
+      overflow: hidden;
+      background: none;
+    }
+
+    .game-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 10px #1e90ff;
+    }
+
+    .game-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      display: block;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .game-card h3 {
+      margin: 0;
+      padding: 8px 5px;
+      background-color: #333;
+      color: #fff;
+      font-size: 12px;
+      font-weight: bold;
+      border-radius: 0 0 10px 10px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .leaderboard {
+      margin-bottom: 20px;
+      background: linear-gradient(145deg, #FFD700 0%, #FFC300 50%, #FFB800 100%);
+      color: #000;
+      font-weight: bold;
+      border-radius: 12px;
+      padding: 12px 25px;
+      box-shadow: 
+        0 4px 6px rgba(0,0,0,0.3),  
+        inset 2px 3px 3px rgba(255,255,255,0.7);
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      transition: transform 0.15s;
+      padding: 10px;
+      border-radius: 20px;
+      text-align: center;
+      cursor: pointer;
+    }
+    
+    .leaderboard:hover {
+      transform: scale(0.98);
+      box-shadow: 0 0 10px #1e90ff;
+    }
+    
+    .leaderboard h2 { 
+      font-size: 15px; 
+      margin: 0 0 0px 0; 
+    }
+
+    .bottom-nav {
+      position: fixed; 
+      bottom: 0; 
+      left: 0; 
+      width: 100%;
+      background-color: #1e90ff;
+      display: flex; 
+      justify-content: space-around;
+      align-items: center; 
+      padding: 3px 0;
+      z-index: 999;
+    }
+    
+    .bottom-nav .nav-item {
+      cursor: pointer;
+      font-size: 25px;
+      color: white;
+      padding: 8px 50px;
+      border-radius: 10px;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+    
+    .bottom-nav .nav-item:active {
+      transform: scale(1.3);
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(2px);
+      transition: backdrop-filter 0.1s ease;
+      background: rgba(0,0,0,0.8);
+    }
+    
+    .modal-content {
+      margin: 35% auto; 
+      padding: 10px;
+      border-radius: 10px; 
+      color: #fff; 
+      text-align: center;
+      background: linear-gradient(145deg, #FFD700 0%, #FFC300 50%, #FFB800 100%);
+      width: 80%;
+      max-width: 400px;
+      box-shadow: 0 0 15px rgba(30, 144, 255, 0.5);
+    }
+    
+    .modal-title {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #fff;
+      font-size: 24px;
+    }
+    
+    .modal-content h4 { 
+      font-size: 50px; 
+      margin: 0 0 5px 0; 
+    }
+    
+    .modal-content ul {
+      padding: 20px;
+      list-style: none;
+    }
+
+    .modal-content li {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 5px;
+      border-bottom: 1px solid rgba(0,0,0,0.09);
+      font-size: 10px;
+      font-weight: bold;
+    }
+
+    .close { 
+      color: #555; 
+      float: right;
+      font-size: 28px; 
+      cursor: pointer; 
+      font-weight: bold; 
+    }
+    
+    .close:hover { 
+      color: red;
+    }
+    
+    .topup-options-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .topup-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #1e90ff;
+      padding: 5px 10px;
+      border-radius: 100px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+    
+    .topup-option:hover {
+      border-color: #fff;
+      transform: translateY(-3px);
+      box-shadow: 0 0 15px rgba(30, 144, 255, 0.9);
+    }
+    
+    .topup-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .coin-icon {
+      width: 20px;
+      height: 20px;
+    }
+    
+    .coin-amount {
+      font-size: 1rem;
+      font-weight: bold;
+    }
+    
+    .topup-price {
+      text-align: right;
+      font-size: 0.7rem;
+      color: #111;
+    }
+    
+    .price-value {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: #fff;
+      margin-top: 3px;
+    }
+
+    /* ---- Perubahan untuk merapikan tampilan pembayaran ---- */
+    .payment-summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(145deg, #FFD700, #FFC300);
+      color: #000;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .payment-summary .summary-details {
+        display: flex;
+        align-items: center;
+    }
+
+    .payment-summary .summary-price {
+      text-align: center; /* Teks harga menjadi rata tengah */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .payment-summary .summary-price .price-label {
+        font-size: 0.7rem;
+        color: #111;
+    }
+
+    .payment-summary .summary-price #selectedPriceValue {
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: #000;
+        margin-top: 2px;
+    }
+    /* ---- End of Changes ---- */
+
+
+    .payment-details-container {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      color: #000;
+      text-align: left;
+    }
+
+    .payment-details h3 {
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+    }
+    
+    .payment-details .detail-item {
+      margin-bottom: 15px;
+    }
+    
+    .detail-item .label {
+      font-size: 0.7rem;
+      color: #777;
+    }
+
+    .detail-item .value {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #000;
+    }
+    
+    .detail-item .copy-btn {
+      background: #1e90ff;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+    
+    .detail-item .copy-btn:active {
+      transform: scale(0.95);
+    }
+    
+    .payment-instructions h4 {
+      text-align: center;
+      margin: 20px 0 10px 0;
+      color: #000;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+    
+    /* ---- Perubahan untuk merapikan instruksi ---- */
+    .payment-instructions ol {
+      padding-left: 20px;
+      font-size: 0.9rem;
+      color: #000;
+      margin: 0;
+      text-align: left;
+    }
+    
+    .payment-instructions li {
+      margin-bottom: 8px;
+    }
+    /* ---- End of Changes ---- */
+
+
+    .copy-success {
+      position: fixed;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      z-index: 10000;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    button { 
+      padding: 10px 20px; 
+      margin: 10px; 
+      border: none; 
+      border-radius: 10px; 
+      cursor: pointer; 
+      background-color: #fff; 
+      color: #111; 
+      font-weight: bold;
+    }
+    
+    button:active { 
+      transform: scale(1.03);
+      box-shadow: 0 0 10px #1e90ff;
+    }
+    
+    .copy-icon {
+      margin-left: 10px;
+      cursor: pointer;
+      color: #1e90ff;
+      font-size: 1.5rem;
+    }
+
+    /* Gaya untuk modal login/registrasi */
+    #authModal .modal-content {
+      background: #111;
+      padding: 30px 20px;
+      border: 2px solid #1e90ff;
+    }
+    
+    #authModal .modal-title {
+        color: #fff;
+    }
+    
+    #authModal input {
+      width: 90%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 5px;
+      border: 1px solid #555;
+      background: #333;
+      color: #fff;
+    }
+
+    #authModal .switch-link {
+        color: #1e90ff;
+        font-size: 0.9em;
+        margin-top: 10px;
+        cursor: pointer;
+        display: block;
+    }
+
+    #authModal .status-message {
+        margin-top: 10px;
+        color: red;
+        font-weight: bold;
+    }
+
+    #verificationForm input {
+        text-align: center;
+        letter-spacing: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">KuPlay</div>
+  <div class="wallet">
+    <div class="wallet-item" id="coinBtn">
+      <img src="ui/coin.png" alt="Coin">
+      <span id="coin-count">100</span>
+    </div>
+    <div class="wallet-item" id="ticketBtn">
+      <img src="ui/ticket (1).png" alt="Ticket">
+      <span id="ticket-count">5</span>
+    </div>
+  </div>
+</header>
+
+<div class="page" id="game">
+  <div id="profileInfo">
+    <img id="profileAvatar" src="https://via.placeholder.com/80" alt="Avatar">
+    <h3 id="profileName">Nama Pemain</h3>
+    <p id="profileId"></p>
+    <button id="logoutBtn">Logout</button>
+    <input type="file" id="avatarInput" accept="image/*" style="display:none;">
+  </div>
+  <div class="leaderboard" id="leaderboardBtn">
+    <h2>Leaderboard</h2>
+  </div>
+  <div class="games">
+    <div class="game-card">
+      <img src="img/fly.png" alt="Game 1">
+      <h3>Flying Ball</h3>
+    </div>
+    <div class="game-card">
+      <img src="img/fly.png" alt="Game 2">
+      <h3>Game 2</h3>
+    </div>
+  </div>
+</div>
+
+<div id="modals-wrapper">
+  
+  <div id="authModal" class="modal">
+    <div class="modal-content">
+      <div id="loginSection">
+        <h2 class="modal-title">Masuk ke Akun</h2>
+        <form id="loginForm">
+          <input type="email" id="loginEmail" placeholder="Email" required>
+          <input type="password" id="loginPassword" placeholder="Kata Sandi" required>
+          <button type="submit">Masuk</button>
+        </form>
+        <a href="#" class="switch-link" id="showRegister">Belum punya akun? Daftar</a>
+        <a href="#" class="switch-link" id="showForgotPassword">Lupa kata sandi?</a>
+        <p class="status-message" id="loginStatus"></p>
+      </div>
+
+      <div id="registerSection" style="display: none;">
+        <h2 class="modal-title">Daftar Akun Baru</h2>
+        <form id="registerForm">
+          <input type="text" id="registerName" placeholder="Nama Lengkap" required>
+          <input type="email" id="registerEmail" placeholder="Email" required>
+          <input type="password" id="registerPassword" placeholder="Kata Sandi" required>
+          <input type="password" id="registerConfirmPassword" placeholder="Konfirmasi Kata Sandi" required>
+          <button type="submit">Daftar</button>
+        </form>
+        <a href="#" class="switch-link" id="showLogin">Sudah punya akun? Masuk</a>
+        <p class="status-message" id="registerStatus"></p>
+      </div>
+      
+      <div id="verificationSection" style="display: none;">
+        <h2 class="modal-title">Verifikasi Akun</h2>
+        <p style="color:#aaa; font-size: 0.9em;">Masukkan kode unik 4 digit yang dikirim ke email Anda.</p>
+        <form id="verificationForm">
+          <input type="text" id="verificationCode" placeholder="Kode 4 Digit" maxlength="4" required>
+          <button type="submit">Verifikasi</button>
+        </form>
+        <p class="status-message" id="verificationStatus"></p>
+      </div>
+
+      <div id="forgotPasswordSection" style="display: none;">
+        <h2 class="modal-title">Lupa Kata Sandi?</h2>
+        <p style="color:#aaa; font-size: 0.9em;">Masukkan email Anda. Kami akan mengirimkan kata sandi baru.</p>
+        <form id="forgotPasswordForm">
+          <input type="email" id="forgotEmail" placeholder="Email" required>
+          <button type="submit">Reset Kata Sandi</button>
+        </form>
+        <a href="#" class="switch-link" id="showLoginFromForgot">Kembali ke Masuk</a>
+        <p class="status-message" id="forgotPasswordStatus"></p>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="coinModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeCoinModal">&times;</span>
+      <h2 class="modal-title">Top Up Coin</h2>
+      <div class="topup-options-container" id="topupOptionsContainer">
+        <div class="topup-option" data-coin="50" data-price="5.000">
+          <div class="topup-header">
+            <img src="ui/coin.png" alt="Coin" class="coin-icon">
+            <span class="coin-amount">50 Coin</span>
+          </div>
+          <div class="topup-price">
+            <span class="price-label">Harga</span>
+            <span class="price-value">Rp 5.000</span>
+          </div>
+        </div>
+        <div class="topup-option" data-coin="100" data-price="10.000">
+          <div class="topup-header">
+            <img src="ui/coin.png" alt="Coin" class="coin-icon">
+            <span class="coin-amount">100 Coin</span>
+          </div>
+          <div class="topup-price">
+            <span class="price-label">Harga</span>
+            <span class="price-value">Rp 10.000</span>
+          </div>
+        </div>
+        <div class="topup-option" data-coin="200" data-price="20.000">
+          <div class="topup-header">
+            <img src="ui/coin.png" alt="Coin" class="coin-icon">
+            <span class="coin-amount">200 Coin</span>
+          </div>
+          <div class="topup-price">
+            <span class="price-label">Harga</span>
+            <span class="price-value">Rp 20.000</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="paymentModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closePaymentModal">&times;</span>
+      <h2 class="modal-title">Detail Pembayaran</h2>
+      <div id="paymentInitialScreen">
+        <div class="payment-summary">
+          <div class="summary-details">
+            <img src="ui/coin.png" alt="Coin" class="coin-icon">
+            <span id="selectedCoinAmount"></span>
+          </div>
+          <div class="summary-price">
+            <span class="price-label">Harga:</span>
+            <span id="selectedPriceValue"></span>
+          </div>
+        </div>
+        <p style="text-align: center; color: #000; font-weight: bold; margin-top: 20px;">Pilih metode transfer:</p>
+        <div class="topup-options-container" style="margin-top: 10px;">
+          <button id="danaBtn">
+            <img src="img/dana.png" style="width: 30px; vertical-align: middle; margin-right: 5px;"> DANA
+          </button>
+          <button id="seabankBtn">
+            <img src="img/seabank.png" style="width: 30px; vertical-align: middle; margin-right: 5px;"> SeaBank
+          </button>
+        </div>
+      </div>
+
+      <div id="paymentDetailScreen" style="display:none;">
+        <div class="payment-details-container">
+          <h3>Detail Transfer</h3>
+          <div class="payment-details">
+            <div class="detail-item">
+              <span class="label">Metode Transfer</span>
+              <div class="value">
+                <span id="methodName"></span>
+              </div>
+            </div>
+            <div class="detail-item">
+              <span class="label">Nomor Rekening</span>
+              <div class="value">
+                <span id="accountNumber"></span>
+                <span class="material-symbols-rounded copy-icon" data-target="accountNumber">content_copy</span>
+              </div>
+            </div>
+            <div class="detail-item">
+              <span class="label">Atas Nama</span>
+              <div class="value">
+                <span id="accountName"></span>
+              </div>
+            </div>
+            <div class="detail-item">
+              <span class="label">Nominal Pembayaran</span>
+              <div class="value">
+                <span id="paymentNominal"></span>
+                <span class="material-symbols-rounded copy-icon" data-target="paymentNominal">content_copy</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="payment-instructions">
+          <h4>Cara Transfer</h4>
+          <ol id="instructionsList">
+            </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="leaderboardModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeLeaderboardModal">&times;</span>
+      <h4>🏆</h4>
+      <h2>Leaderboard</h2>
+      <ul>
+        <li><span>Player1</span><img src="ui/reward.png" alt="mendali" style="width:25px; height:25px; vertical-align:middle; margin-right:5px; margin:-10px;"></span><span>6000</span></li>
+        <li><span>Player2</span><span>5000</span></li>
+        <li><span>Player3</span><span>4000</span></li>
+        <li><span>Player4</span><span>3500</span></li>
+        <li><span>Player5</span><span>3000</span></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<footer class="bottom-nav">
+  <div class="nav-item" onclick="showPage('hadiah')">
+    <span class="material-symbols-rounded">featured_seasonal_and_gifts</span>
+  </div>
+  <div class="nav-item" onclick="showPage('game')">
+    <span class="material-symbols-rounded">stadia_controller</span>
+  </div>
+  <div class="nav-item" onclick="showPage('history')">
+    <span class="material-symbols-rounded">overview</span>
+  </div>
+</footer>
+
+<div id="copySuccess" class="copy-success">Berhasil disalin!</div>
+
+<script>
+// Ganti URL ini dengan URL Web Apps Script Anda
+const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyJ5WFTpUQc8uso-cBc97-2_fiv-Mw-YwvT3RYZQo15RAl8e3iKOwKByoN_eRsFG0sE8w/exec"; 
+
+let coins = 100;
+let tickets = 5;
+
+// ================== ELEMENT PROFIL ==================
+const profileNameEl = document.getElementById('profileName');
+const profileIdEl = document.getElementById('profileId');
+const profileAvatarEl = document.getElementById('profileAvatar');
+const avatarInput = document.getElementById('avatarInput');
+
+// ================== ELEMENT AUTH ==================
+const authModal = document.getElementById('authModal');
+const loginSection = document.getElementById('loginSection');
+const registerSection = document.getElementById('registerSection');
+const verificationSection = document.getElementById('verificationSection');
+const forgotPasswordSection = document.getElementById('forgotPasswordSection');
+
+const loginForm = document.getElementById('loginForm');
+const registerForm = document.getElementById('registerForm');
+const verificationForm = document.getElementById('verificationForm');
+const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+
+const loginStatusEl = document.getElementById('loginStatus');
+const registerStatusEl = document.getElementById('registerStatus');
+const verificationStatusEl = document.getElementById('verificationStatus');
+const forgotPasswordStatusEl = document.getElementById('forgotPasswordStatus');
+
+// ================== LOAD PROFILE ==================
+function loadProfile() {
+    const userId = localStorage.getItem('userId');
+    const playerName = localStorage.getItem('playerName');
+    const playerAvatar = localStorage.getItem('playerAvatar');
+    const playerEmail = localStorage.getItem('playerEmail');
+    
+    if (!userId || !playerName || !playerEmail) {
+        authModal.style.display = 'flex';
+        showAuthSection('login');
+    } else {
+        profileIdEl.textContent = userId;
+        profileNameEl.textContent = playerName;
+        if (playerAvatar) profileAvatarEl.src = playerAvatar;
+        showPage('game');
+    }
+}
+
+// ================== AUTH SECTION SWITCHER ==================
+function showAuthSection(section) {
+    loginSection.style.display = 'none';
+    registerSection.style.display = 'none';
+    verificationSection.style.display = 'none';
+    forgotPasswordSection.style.display = 'none';
+
+    if (section === 'login') loginSection.style.display = 'block';
+    if (section === 'register') registerSection.style.display = 'block';
+    if (section === 'verification') verificationSection.style.display = 'block';
+    if (section === 'forgotPassword') forgotPasswordSection.style.display = 'block';
+}
+
+// ================== NAVIGASI ANTAR FORM ==================
+document.getElementById('showRegister').addEventListener('click', (e) => { e.preventDefault(); showAuthSection('register'); });
+document.getElementById('showLogin').addEventListener('click', (e) => { e.preventDefault(); showAuthSection('login'); });
+document.getElementById('showForgotPassword').addEventListener('click', (e) => { e.preventDefault(); showAuthSection('forgotPassword'); });
+document.getElementById('showLoginFromForgot').addEventListener('click', (e) => { e.preventDefault(); showAuthSection('login'); });
+
+// ================== REGISTER ==================
+registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('registerName').value;
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+    if (password !== confirmPassword) {
+        registerStatusEl.textContent = 'Konfirmasi kata sandi tidak cocok.';
+        registerStatusEl.style.color = 'red';
+        return;
+    }
+
+    registerStatusEl.textContent = 'Mendaftar...';
+    registerStatusEl.style.color = 'yellow';
+
+    const res = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'register', name, email, password }),
+        headers: { 'Content-Type': 'application/json' }
+    });
+
+    const data = await res.json();
+    if (data.status === 'success') {
+        registerStatusEl.textContent = `Berhasil registrasi! Kode verifikasi dikirim ke ${email}.`;
+        registerStatusEl.style.color = 'green';
+        localStorage.setItem('tempEmail', email);
+        setTimeout(() => showAuthSection('verification'), 2000);
+    } else {
+        registerStatusEl.textContent = data.message;
+        registerStatusEl.style.color = 'red';
+    }
+});
+
+// ================== VERIFIKASI ==================
+verificationForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = localStorage.getItem('tempEmail');
+    const code = document.getElementById('verificationCode').value;
+
+    verificationStatusEl.textContent = 'Memverifikasi...';
+    verificationStatusEl.style.color = 'yellow';
+
+    const res = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'verify', email, code }),
+        headers: { 'Content-Type': 'application/json' }
+    });
+
+    const data = await res.json();
+    if (data.status === 'success') {
+        verificationStatusEl.textContent = 'Verifikasi berhasil! Akun Anda sudah aktif.';
+        verificationStatusEl.style.color = 'green';
+        localStorage.setItem('userId', data.userId);
+        localStorage.setItem('playerName', data.name);
+        localStorage.setItem('playerEmail', email);
+        localStorage.removeItem('tempEmail');
+        setTimeout(() => { authModal.style.display = 'none'; loadProfile(); }, 2000);
+    } else {
+        verificationStatusEl.textContent = data.message;
+        verificationStatusEl.style.color = 'red';
+    }
+});
+
+// ================== LOGIN ==================
+loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    loginStatusEl.textContent = 'Memproses...';
+    loginStatusEl.style.color = 'yellow';
+
+    const res = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'login', email, password }),
+        headers: { 'Content-Type': 'application/json' }
+    });
+
+    const data = await res.json();
+    if (data.status === 'success') {
+        loginStatusEl.textContent = 'Berhasil login!';
+        loginStatusEl.style.color = 'green';
+        localStorage.setItem('userId', data.userId);
+        localStorage.setItem('playerName', data.name);
+        localStorage.setItem('playerEmail', email);
+        setTimeout(() => { authModal.style.display = 'none'; loadProfile(); }, 2000);
+    } else {
+        loginStatusEl.textContent = data.message;
+        loginStatusEl.style.color = 'red';
+    }
+});
+
+// ================== LUPA PASSWORD ==================
+forgotPasswordForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('forgotEmail').value;
+
+    forgotPasswordStatusEl.textContent = 'Memproses...';
+    forgotPasswordStatusEl.style.color = 'yellow';
+
+    const res = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: 'forgotPassword', email }),
+        headers: { 'Content-Type': 'application/json' }
+    });
+
+    const data = await res.json();
+    forgotPasswordStatusEl.textContent = data.message;
+    forgotPasswordStatusEl.style.color = (data.status === 'success') ? 'green' : 'red';
+});
+
+// ================== LOGOUT ==================
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.clear();
+    location.reload();
+});
+
+// ================== AVATAR ==================
+profileAvatarEl.addEventListener('click', () => avatarInput.click());
+avatarInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const imageDataUrl = event.target.result;
+            profileAvatarEl.src = imageDataUrl;
+            localStorage.setItem('playerAvatar', imageDataUrl);
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// ================== COIN ==================
+const coinEl = document.getElementById('coin-count');
+function addCoin(amount){ coins += amount; coinEl.textContent = coins; }
+
+// ================== MODAL HANDLING ==================
+const coinBtn = document.getElementById('coinBtn');
+const coinModal = document.getElementById('coinModal');
+const closeCoinModal = document.getElementById('closeCoinModal');
+const paymentModal = document.getElementById('paymentModal');
+const closePaymentModal = document.getElementById('closePaymentModal');
+const leaderboardBtn = document.getElementById('leaderboardBtn');
+const leaderboardModal = document.getElementById('leaderboardModal');
+const closeLeaderboardModal = document.getElementById('closeLeaderboardModal');
+
+coinBtn.onclick = () => coinModal.style.display = 'block';
+closeCoinModal.onclick = () => coinModal.style.display = 'none';
+closePaymentModal.onclick = () => paymentModal.style.display = 'none';
+leaderboardBtn.onclick = () => leaderboardModal.style.display = 'block';
+closeLeaderboardModal.onclick = () => leaderboardModal.style.display = 'none';
+
+window.onclick = (event) => {
+  if(event.target === coinModal) coinModal.style.display = 'none';
+  if(event.target === paymentModal) paymentModal.style.display = 'none';
+  if(event.target === leaderboardModal) leaderboardModal.style.display = 'none';
+  if(event.target === authModal && localStorage.getItem('userId')) authModal.style.display = 'none';
+};
+
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+  const page = document.getElementById(id);
+  if(page) page.style.display = 'block';
+}
+
+// ================== DETAIL PEMBAYARAN ==================
+const topupOptions = document.querySelectorAll('.topup-option');
+const selectedCoinAmountEl = document.getElementById('selectedCoinAmount');
+const selectedPriceValueEl = document.getElementById('selectedPriceValue');
+const paymentInitialScreen = document.getElementById('paymentInitialScreen');
+const paymentDetailScreen = document.getElementById('paymentDetailScreen');
+const danaBtn = document.getElementById('danaBtn');
+const seabankBtn = document.getElementById('seabankBtn');
+const methodNameEl = document.getElementById('methodName');
+const accountNumberEl = document.getElementById('accountNumber');
+const accountNameEl = document.getElementById('accountName');
+const paymentNominalEl = document.getElementById('paymentNominal');
+const instructionsList = document.getElementById('instructionsList');
+const copySuccessToast = document.getElementById('copySuccess');
+
+let selectedCoinData = {};
+
+topupOptions.forEach(option => {
+  option.addEventListener('click', () => {
+    selectedCoinData.coin = option.dataset.coin;
+    selectedCoinData.price = option.dataset.price;
+    selectedCoinAmountEl.textContent = `${selectedCoinData.coin} Coin`;
+    selectedPriceValueEl.textContent = `Rp ${selectedCoinData.price}`;
+    
+    coinModal.style.display = 'none';
+    paymentModal.style.display = 'flex';
+    paymentInitialScreen.style.display = 'block';
+    paymentDetailScreen.style.display = 'none';
+  });
+});
+
+danaBtn.addEventListener('click', () => {
+  showPaymentDetails({
+    method: 'DANA',
+    accountNumber: '085790344651',
+    accountName: 'Taufiqurrahman',
+    nominal: selectedCoinData.price
+  }, 'dana');
+});
+
+seabankBtn.addEventListener('click', () => {
+  showPaymentDetails({
+    method: 'SeaBank',
+    accountNumber: '901681859771',
+    accountName: 'Taufiqurrahman',
+    nominal: selectedCoinData.price
+  }, 'seabank');
+});
+
+function showPaymentDetails(data, type) {
+  methodNameEl.textContent = data.method;
+  accountNumberEl.textContent = data.accountNumber;
+  accountNameEl.textContent = data.accountName;
+  paymentNominalEl.textContent = `Rp ${data.nominal}`;
+
+  let instructions = [];
+  if (type === 'dana') {
+    instructions = [
+      'Buka aplikasi e-wallet DANA.',
+      'Pilih menu Kirim/Send.',
+      'Pilih opsi "Kirim ke Nomor Telepon".',
+      `Masukkan nomor tujuan ${data.accountNumber} dan nominal Rp ${data.nominal}.`,
+      'Ikuti petunjuk selanjutnya hingga transfer berhasil.'
+    ];
+  } else if (type === 'seabank') {
+    instructions = [
+      'Buka aplikasi mobile banking/e-wallet Anda.',
+      'Pilih menu Transfer atau Kirim Uang.',
+      'Pilih opsi "Transfer ke Bank Lain".',
+      'Pilih bank tujuan: SeaBank (Bank Seabank Indonesia).',
+      `Masukkan nomor rekening ${data.accountNumber} dan nominal Rp ${data.nominal}.`,
+      'Pastikan nama penerima adalah "Taufiqurrahman", lalu konfirmasi transfer.'
+    ];
+  }
+
+  instructionsList.innerHTML = instructions.map(step => `<li>${step}</li>`).join('');
+  paymentInitialScreen.style.display = 'none';
+  paymentDetailScreen.style.display = 'block';
+}
+
+// ================== COPY TO CLIPBOARD ==================
+document.querySelectorAll('.copy-icon').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const targetId = btn.dataset.target;
+    const targetElement = document.getElementById(targetId);
+    const textToCopy = targetElement.textContent;
+
+    navigator.clipboard.writeText(textToCopy).then(showCopyToast).catch(err => {
+      console.error('Gagal menyalin:', err);
+    });
+  });
+});
+
+function showCopyToast() {
+  copySuccessToast.style.opacity = '1';
+  setTimeout(() => { copySuccessToast.style.opacity = '0'; }, 2000);
+}
+
+// ================== AUTO LOAD ==================
+document.addEventListener('DOMContentLoaded', loadProfile);
+</script>
+
+
+<div class="page" id="hadiah">                        
+  <h2 class="redeem-title">Redeem Hadiah</h2>                        
+  <div class="scroll-x">
+  </div>
+  <div class="grid-2">
+  </div>
+</div>
+      
+<div id="redeemModal" class="redeem-modal">
+  <div class="redeem-modal-inner redeem-item">
+    <span class="redeem-modal-close">&times;</span>
+    <img id="modal-img" class="redeem-img" src="" alt="Hadiah">
+    <div class="redeem-name" id="modal-name"></div>
+    <div class="ticket-control">
+      <button id="minusBtn">−</button>
+      <div class="ticket-display">
+        <img src="ui/ticket (1).png" alt="Tiket" class="ticket-icon">
+        <span id="modal-price"></span>
+      </div>
+      <button id="plusBtn">+</button>
+    </div>
+    <button class="redeem-modal-btn">Redeem</button>
+    <div class="redeem-link" id="openTerms">Lihat syarat redeem</div>
+  </div>
+</div>
+
+
+<div id="redeemModalSpecial" class="redeem-modal">
+  <div class="redeem-modal-inner redeem-item">
+    <span class="redeem-modal-close">&times;</span>
+    <img id="modal-img-special" class="redeem-img" src="" alt="Hadiah">
+    <div class="redeem-name" id="modal-name-special"></div>
+    <div class="ticket-control">
+      <div class="ticket-display">
+        <img src="ui/ticket (1).png" alt="Tiket" class="ticket-icon">
+        <span id="modal-price-special"></span>
+      </div>
+    </div>
+    <button class="redeem-modal-btn">Redeem</button>
+    <div class="redeem-link" id="openTermsSpecial">Lihat syarat redeem</div>
+  </div>
+</div>
+
+
+<div id="termsModal" class="redeem-modal">
+  <div class="redeem-modal-inner">
+    <span class="redeem-modal-close">&times;</span>
+    <h3 style="text-align:center; color:#fff;">Syarat & Ketentuan</h3>
+    <ul class="terms-list" id="termsList">
+    </ul>
+  </div>
+</div>
+
+<div id="termsModalSpecial" class="redeem-modal">
+  <div class="redeem-modal-inner">
+    <span class="redeem-modal-close">&times;</span>
+    <h3 style="text-align:center; color:#fff;">Syarat & Ketentuan</h3>
+    <ul class="terms-list" id="termsListSpecial">
+    </ul>
+  </div>
+</div>
+      
+<style>      
+  .redeem-title { 
+    text-align: center; 
+    margin-bottom: 20px; 
+    font-size: 25px; 
+    color: #fff; 
+  }      
+  /* Gaya item umum */      
+  .redeem-item { 
+    flex: 0 0 auto; 
+    border-radius: 10px; 
+    overflow: hidden;
+    background: #111; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease; cursor: pointer;
+  }  
+  
+  .redeem-item:hover { 
+    transform: scale(1.08); 
+    box-shadow: 0 0 10px #1e90ff;
+  }      
+  
+  .redeem-img { 
+    width: 100%; 
+    height: 150px; 
+    object-fit: cover;
+    display: block; 
+  }  
+  
+  .redeem-name { 
+    background: #222; 
+    color: #fff;
+    text-align: center;
+    padding: 8px;
+    font-size: 14px; 
+    font-weight: bold;
+  }      
+      
+  .scroll-x { 
+    display: 
+    flex; overflow-x: auto;
+    gap: 12px; 
+    padding: 10px; 
+    scroll-snap-type: x mandatory;
+  }      
+  
+  .scroll-x .redeem-item { 
+    width: 130px;
+    scroll-snap-align: start;
+  }      
+      
+  .grid-2 { 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 12px; 
+    padding: 10px; 
+  }      
+  /* Modal CSS responsif */      
+  .redeem-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    transition: backdrop-filter 0.1s ease; /* transisi blur */
+    background: rgba(0,0,0,0.5);
+  }
+/* saat modal muncul */
+  .redeem-modal.show {
+    backdrop-filter: blur(6px);        /* blur akhir */
+  }      
+  
+  .redeem-modal-inner {      
+    position: relative;      
+    width: 260px;       /* 2x lebar item asli */      
+    max-width: 90%;     /* jangan melebihi layar */      
+    transform: scale(0.8);      
+    opacity: 0;      
+    transition: all 0.1s ease;      
+  }      
+  
+  .redeem-modal-inner .redeem-img { 
+    height: 300px;
+  } /* 2x tinggi item asli */     
+  
+  .redeem-modal.show .redeem-modal-inner { 
+    transform: scale(1); 
+    opacity: 1;
+  }      
+      
+  .redeem-modal-close { 
+    position: absolute; 
+    top: 8px;
+    right: 12px; 
+    font-size: 24px; 
+    cursor: pointer;
+    color: #fff; 
+    transition: color 0.2s ease;
+  }    
+  
+  .redeem-modal-close:hover { 
+    color:#1e90ff; 
+  }      
+      
+  .modal-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* semua isi center */
+    gap: 12px;
+    margin-top: 15px;
+  }
+  
+  .redeem-modal-btn {
+    display: block;
+    margin: 15px auto;
+    background-color: #1e90ff;
+    color:#fff;
+    border:none;
+    padding:10px 20px;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .redeem-modal-btn:active {
+    background-color:#63b3ff;
+    transform: scale(1.1);
+  }
+  
+  .redeem-link {
+    font-size: 10px;
+    color: #ccc;
+    text-decoration: underline;
+    cursor: pointer;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .redeem-link:hover { 
+    color:#1e90ff;
+  }
+  
+  .terms-list {
+    padding: 0 100px;
+    color: #fff;
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  .terms-list li { 
+    margin-bottom: 6px; 
+  }      
+  /* Responsive gambar & modal untuk layar kecil */      
+  @media screen and (max-width: 400px){      
+    .redeem-modal-inner { width: 90%; }      
+    .redeem-modal-inner .redeem-img { height: auto; } /* menyesuaikan tinggi */      
+  .ticket-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 15px 0;
+  }
+  .ticket-control button {
+    background: #1e90ff;
+    color: #fff;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.3s ease;
+  }
+  
+  .ticket-control button:active {
+    background: #63b3ff;
+    transform: scale(1.1);
+  }
+  
+  .ticket-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #fff;
+    background: #222;
+    padding: 4px 10px;
+    border-radius: 8px;
+    min-width: 100px;
+    justify-content: center;
+  }
+  
+  .ticket-icon {
+    width: 13px;
+    height: 13px;
+    object-fit: contain;
+  }
+</style>      
+      
+<script>        
+// Deklarasi variabel global yang diperlukan
+const API_URL = "https://script.google.com/macros/s/AKfycbyMfvXICyfH3c0JmXpIOh3fwBnLeNJBT5EFN9BIEhd_oXZz8jDX9s5cO7dxRLZcNRzn/exec";
+const scrollContainer = document.querySelector(".scroll-x");
+const gridContainer = document.querySelector(".grid-2");
+let playerTickets = 150000; // Contoh jumlah tiket yang dimiliki player
+const modal = document.getElementById('redeemModal');
+const modalSpecial = document.getElementById('redeemModalSpecial');
+
+// --- Ambil data dari Google Sheet dan render item ---
+fetch(API_URL)
+  .then(res => res.json())
+  .then(data => {
+    // Render scroll-x
+    scrollContainer.innerHTML = "";
+    data.scroll.forEach(item => {
+      scrollContainer.innerHTML += `
+        <div class="redeem-item"   
+             data-nama="${item.nama}"   
+             data-img="${item.gambar}"   
+             data-harga="${item.harga}"   
+             data-syarat="${item.syarat}">  
+          <img src="${item.gambar}" alt="${item.nama}" class="redeem-img">  
+          <div class="redeem-name">${item.nama}</div>  
+        </div>  
+      `;
+    });
+
+    // Render grid-2
+    gridContainer.innerHTML = "";
+    data.grid.forEach(item => {
+      gridContainer.innerHTML += `
+        <div class="redeem-item"   
+             data-nama="${item.nama}"   
+             data-img="${item.gambar}"   
+             data-harga="${item.harga}"   
+             data-syarat="${item.syarat}">  
+          <img src="${item.gambar}" alt="${item.nama}" class="redeem-img">  
+          <div class="redeem-name">${item.nama}</div>  
+        </div>  
+      `;
+    });
+
+    // Jalankan inisialisasi modal setelah semua item di-render
+    initModal();
+  })
+  .catch(error => console.error("Error fetching data:", error));
+
+// --- Fungsi untuk inisialisasi modal dan tombol plus-minus ---
+function initModal() {
+  // Event listener untuk item di scroll-x
+  document.querySelectorAll('.scroll-x .redeem-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const itemPrice = parseInt(item.dataset.harga, 10);
+      let currentTicketAmount = itemPrice;
+
+      // Update konten modal utama
+      document.getElementById('modal-name').textContent = item.dataset.nama;
+      document.getElementById('modal-img').src = item.dataset.img;
+      document.getElementById('modal-price').textContent = currentTicketAmount;
+
+      // Rapikan syarat jadi list
+      const termsList = document.getElementById('termsList');
+      const syaratArr = item.dataset.syarat.split(/\r?\n|\|/);
+      termsList.innerHTML = syaratArr
+        .map(s => s.trim())
+        .filter(s => s.length > 0)
+        .map(s => `<li>${s}</li>`)
+        .join("");
+
+      // Tampilkan modal
+      modal.style.display = 'flex';
+      setTimeout(() => modal.classList.add('show'), 10);
+
+      // Logika tombol plus-minus untuk modal ini
+      const ticketDisplay = document.getElementById('modal-price');
+      const plusBtn = document.getElementById('plusBtn');
+      const minusBtn = document.getElementById('minusBtn');
+      const step = itemPrice; // Kelipatan nominal sesuai harga item
+
+      plusBtn.onclick = () => {
+        const newAmount = currentTicketAmount + step;
+        if (newAmount <= playerTickets) {
+          currentTicketAmount = newAmount;
+          ticketDisplay.textContent = currentTicketAmount;
+        }
+      };
+
+      minusBtn.onclick = () => {
+        const newAmount = currentTicketAmount - step;
+        if (newAmount >= itemPrice) { // Batasan: tidak boleh kurang dari harga awal
+          currentTicketAmount = newAmount;
+          ticketDisplay.textContent = currentTicketAmount;
+        }
+      };
+    });
+  });
+
+  // Event listener untuk item di grid-2
+  document.querySelectorAll('.grid-2 .redeem-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const itemPrice = parseInt(item.dataset.harga, 10);
+      let currentTicketAmount = itemPrice;
+
+      // Update konten modal khusus
+      document.getElementById('modal-name-special').textContent = item.dataset.nama;
+      document.getElementById('modal-img-special').src = item.dataset.img;
+      document.getElementById('modal-price-special').textContent = currentTicketAmount;
+
+      // Rapikan syarat jadi list
+      const termsListSpecial = document.getElementById('termsListSpecial');
+      const syaratArr2 = item.dataset.syarat.split(/\r?\n|\|/);
+      termsListSpecial.innerHTML = syaratArr2
+        .map(s => s.trim())
+        .filter(s => s.length > 0)
+        .map(s => `<li>${s}</li>`)
+        .join("");
+
+      // Tampilkan modal khusus
+      modalSpecial.style.display = 'flex';
+      setTimeout(() => modalSpecial.classList.add('show'), 10);
+
+      // Logika tombol plus-minus untuk modal khusus
+      const ticketDisplaySpecial = document.getElementById('modal-price-special');
+      const plusBtnSpecial = document.getElementById('plusBtnSpecial');
+      const minusBtnSpecial = document.getElementById('minusBtnSpecial');
+      const step = itemPrice; // Kelipatan nominal sesuai harga item
+
+      plusBtnSpecial.onclick = () => {
+        const newAmount = currentTicketAmount + step;
+        if (newAmount <= playerTickets) {
+          currentTicketAmount = newAmount;
+          ticketDisplaySpecial.textContent = currentTicketAmount;
+        }
+      };
+
+      minusBtnSpecial.onclick = () => {
+        const newAmount = currentTicketAmount - step;
+        if (newAmount >= itemPrice) { // Batasan: tidak boleh kurang dari harga awal
+          currentTicketAmount = newAmount;
+          ticketDisplaySpecial.textContent = currentTicketAmount;
+        }
+      };
+    });
+  });
+}
+
+// --- Logika tombol "Lihat syarat redeem" ---
+document.getElementById('openTerms').addEventListener('click', () => {
+  const termsModal = document.getElementById('termsModal');
+  termsModal.style.display = 'flex';
+  setTimeout(() => termsModal.classList.add('show'), 10);
+});
+
+document.getElementById('openTermsSpecial').addEventListener('click', () => {
+  const termsModal = document.getElementById('termsModalSpecial');
+  termsModal.style.display = 'flex';
+  setTimeout(() => termsModal.classList.add('show'), 10);
+});
+
+// --- Logika umum untuk menutup semua modal ---
+document.querySelectorAll('.redeem-modal').forEach(modalElement => {
+  const closeBtn = modalElement.querySelector('.redeem-modal-close');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      modalElement.classList.remove('show');
+      setTimeout(() => modalElement.style.display = 'none', 300);
+    });
+  }
+  window.addEventListener('click', e => {
+    if (e.target === modalElement) {
+      modalElement.classList.remove('show');
+      setTimeout(() => modalElement.style.display = 'none', 300);
+    }
+  });
+});
+</script>  
+
+<div class="page" id="history">  
+  <h2>History</h2>  
+  <ul>  
+    <li><span>Game 1</span><span class="status menang">Menang</span></li>  
+    <li><span>Game 2</span><span class="status kalah">Kalah</span></li>  
+    <li><span>Game 3</span><span class="status menang">Menang</span></li>  
+    <li><span>Berhasil Top Up Coin</span><span class="status menang">+100 Coin</span></li>  
+    <li><span>Berhasil Redeem Hadiah</span><span class="status">Voucher Pulsa</span></li>  
+    <li><span>Tiket Digunakan</span><span class="status kalah">-50 Tiket</span></li>
+    <li><span>Coin Digunakan</span><span class="status kalah">-50 Coin</span></li>  
+    <li><span>Perolehan Tiket</span><span class="status menang">+2 Tiket</span></li>  
+  </ul>  
+</div>  
+
+<style>
+  #history {
+    padding: 30px;
+    text-align: center;
+  }
+
+  #history ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 400px; /* biar center & rapi di layar HP */
+  }
+
+  #history li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 5px;
+    border-bottom: 1px solid #333; /* garis pemisah */
+    font-size: 10px;
+  }
+
+  .status {
+    font-weight: bold;
+  }
+
+  .status.menang {
+    color: #4caf50; /* hijau menang */
+  }
+
+  .status.kalah {
+    color: #f44336; /* merah kalah */
+  }
+</style>
+</body>
+</html>
