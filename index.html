@@ -1,0 +1,1986 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KuPlay</title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            padding-bottom: 60px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: #1e90ff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            font-weight: bold;
+            font-size: 25px;
+        }
+
+        .wallet {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .wallet-item {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.3);
+            color: #333;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            transition: transform 0.1s;
+        }
+
+        .wallet-item:hover {
+            transform: scale(1.1);
+        }
+
+        .wallet-item img {
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+        }
+
+        .page {
+            display: none;
+            padding: 20px 10px;
+            padding-bottom: 70px;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* Gaya untuk profil di halaman game */
+        #profileInfo {
+            text-align: center;
+            margin: 20px 0;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        #profileAvatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 3px solid #1e90ff;
+            box-shadow: 0 0 10px rgba(30, 144, 255, 0.5);
+            transition: transform 0.2s;
+        }
+
+        #profileAvatar:hover {
+            transform: scale(1.1);
+        }
+
+        #profileName {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        #profileId {
+            font-size: 0.8em;
+            color: #aaa;
+        }
+
+        .games {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .game-card {
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+            border-radius: 10px;
+            overflow: hidden;
+            background: none;
+        }
+
+        .game-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px #1e90ff;
+        }
+
+        .game-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+            border-radius: 10px 10px 0 0;
+        }
+
+        .game-card h3 {
+            margin: 0;
+            padding: 8px 5px;
+            background-color: #333;
+            color: #fff;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 0 0 10px 10px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .leaderboard {
+            margin-bottom: 20px;
+            background: linear-gradient(145deg, #FFD700 0%, #FFC300 50%, #FFB800 100%);
+            color: #000;
+            font-weight: bold;
+            border-radius: 12px;
+            padding: 12px 25px;
+            box-shadow:
+                0 4px 6px rgba(0, 0, 0, 0.3),
+                inset 2px 3px 3px rgba(255, 255, 255, 0.7);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            transition: transform 0.15s;
+            padding: 10px;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .leaderboard:hover {
+            transform: scale(0.98);
+            box-shadow: 0 0 10px #1e90ff;
+        }
+
+        .leaderboard h2 {
+            font-size: 15px;
+            margin: 0 0 0px 0;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #1e90ff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 3px 0;
+            z-index: 999;
+        }
+
+        .bottom-nav .nav-item {
+            cursor: pointer;
+            font-size: 25px;
+            color: white;
+            padding: 8px 50px;
+            border-radius: 10px;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .bottom-nav .nav-item:active {
+            transform: scale(1.3);
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(2px);
+            transition: backdrop-filter 0.1s ease;
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            margin: 35% auto;
+            padding: 10px;
+            border-radius: 10px;
+            color: #fff;
+            text-align: center;
+            background: linear-gradient(145deg, #FFD700 0%, #FFC300 50%, #FFB800 100%);
+            width: 80%;
+            max-width: 400px;
+            box-shadow: 0 0 15px rgba(30, 144, 255, 0.5);
+        }
+
+        .modal-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #fff;
+            font-size: 24px;
+        }
+
+        .modal-content h4 {
+            font-size: 50px;
+            margin: 0 0 5px 0;
+        }
+
+        .modal-content ul {
+            padding: 20px;
+            list-style: none;
+        }
+
+        .modal-content li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 5px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .close {
+            color: #555;
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .close:hover {
+            color: red;
+        }
+
+        .topup-options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .topup-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #1e90ff;
+            padding: 5px 10px;
+            border-radius: 100px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .topup-option:hover {
+            border-color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 0 15px rgba(30, 144, 255, 0.9);
+        }
+
+        .topup-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .coin-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .coin-amount {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .topup-price {
+            text-align: right;
+            font-size: 0.7rem;
+            color: #111;
+        }
+
+        .price-value {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #fff;
+            margin-top: 3px;
+        }
+
+        /* ---- Perubahan untuk merapikan tampilan pembayaran ---- */
+        .payment-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(145deg, #FFD700, #FFC300);
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .payment-summary .summary-details {
+            display: flex;
+            align-items: center;
+        }
+
+        .payment-summary .summary-price {
+            text-align: center;
+            /* Teks harga menjadi rata tengah */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .payment-summary .summary-price .price-label {
+            font-size: 0.7rem;
+            color: #111;
+        }
+
+        .payment-summary .summary-price #selectedPriceValue {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #000;
+            margin-top: 2px;
+        }
+
+        /* ---- End of Changes ---- */
+
+
+        .payment-details-container {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            color: #000;
+            text-align: left;
+        }
+
+        .payment-details h3 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .payment-details .detail-item {
+            margin-bottom: 15px;
+        }
+
+        .detail-item .label {
+            font-size: 0.7rem;
+            color: #777;
+        }
+
+        .detail-item .value {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .detail-item .copy-btn {
+            background: #1e90ff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .detail-item .copy-btn:active {
+            transform: scale(0.95);
+        }
+
+        .payment-instructions h4 {
+            text-align: center;
+            margin: 20px 0 10px 0;
+            color: #000;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        /* ---- Perubahan untuk merapikan instruksi ---- */
+        .payment-instructions ol {
+            padding-left: 20px;
+            font-size: 0.9rem;
+            color: #000;
+            margin: 0;
+            text-align: left;
+        }
+
+        .payment-instructions li {
+            margin-bottom: 8px;
+        }
+
+        /* ---- End of Changes ---- */
+
+
+        .copy-success {
+            position: fixed;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            color: #111;
+            font-weight: bold;
+        }
+
+        button:active {
+            transform: scale(1.03);
+            box-shadow: 0 0 10px #1e90ff;
+        }
+
+        .copy-icon {
+            margin-left: 10px;
+            cursor: pointer;
+            color: #1e90ff;
+            font-size: 1.5rem;
+        }
+
+        /* Gaya untuk modal login */
+        #loginModal .modal-content,
+        #registerModal .modal-content,
+        #verifyModal .modal-content,
+        #resetModal .modal-content,
+        #changePasswordModal .modal-content,
+        #welcomeModal .modal-content,
+        #redeemSuccessModal .modal-content {
+            background: #111;
+            padding: 30px 20px;
+            border: 2px solid #1e90ff;
+        }
+
+        #loginModal .modal-title,
+        #registerModal .modal-title,
+        #verifyModal .modal-title,
+        #resetModal .modal-title,
+        #changePasswordModal .modal-title,
+        #welcomeModal .modal-title,
+        #redeemSuccessModal .modal-title {
+            color: #fff;
+        }
+
+        #loginForm input,
+        #registerForm input,
+        #verifyForm input,
+        #resetForm input,
+        #changePasswordForm input {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #555;
+            background: #333;
+            color: #fff;
+        }
+
+        #loginForm button,
+        #registerForm button,
+        #verifyForm button,
+        #resetForm button,
+        #changePasswordForm button {
+            width: 100%;
+            margin-top: 20px;
+            margin-left: 0px;
+        }
+
+        .logout-btn-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .logout-btn {
+            background-color: red;
+            color: white;
+            font-size: 12px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Redeem & History Styles */
+        .redeem-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 25px;
+            color: #fff;
+        }
+
+        /* Gaya item umum */
+        .redeem-item {
+            flex: 0 0 auto;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #111;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .redeem-item:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 10px #1e90ff;
+        }
+
+        .redeem-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .redeem-name {
+            background: #222;
+            color: #fff;
+            text-align: center;
+            padding: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .scroll-x {
+            display:
+                flex;
+            overflow-x: auto;
+            gap: 12px;
+            padding: 10px;
+            scroll-snap-type: x mandatory;
+        }
+
+        .scroll-x .redeem-item {
+            width: 130px;
+            scroll-snap-align: start;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 10px;
+        }
+
+        /* Modal CSS responsif */
+        .redeem-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            transition: backdrop-filter 0.1s ease;
+            /* transisi blur */
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        /* saat modal muncul */
+        .redeem-modal.show {
+            backdrop-filter: blur(6px);
+            /* blur akhir */
+        }
+
+        .redeem-modal-inner {
+            position: relative;
+            width: 260px;
+            /* 2x lebar item asli */
+            max-width: 90%;
+            /* jangan melebihi layar */
+            transform: scale(0.8);
+            opacity: 0;
+            transition: all 0.1s ease;
+        }
+
+        .redeem-modal-inner .redeem-img {
+            height: 300px;
+        }
+
+        /* 2x tinggi item asli */
+        .redeem-modal.show .redeem-modal-inner {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .redeem-modal-close {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #fff;
+            transition: color 0.2s ease;
+        }
+
+        .redeem-modal-close:hover {
+            color: #1e90ff;
+        }
+
+        .modal-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* semua isi center */
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .redeem-modal-btn {
+            display: block;
+            margin: 15px auto;
+            background-color: #1e90ff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .redeem-modal-btn:active {
+            background-color: #63b3ff;
+            transform: scale(1.1);
+        }
+
+        .redeem-link {
+            font-size: 10px;
+            color: #ccc;
+            text-decoration: underline;
+            cursor: pointer;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .redeem-link:hover {
+            color: #1e90ff;
+        }
+
+        .terms-list {
+            padding: 0 100px;
+            color: #fff;
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        .terms-list li {
+            margin-bottom: 6px;
+        }
+
+        /* Responsive gambar & modal untuk layar kecil */
+        @media screen and (max-width: 400px) {
+            .redeem-modal-inner {
+                width: 90%;
+            }
+
+            .redeem-modal-inner .redeem-img {
+                height: auto;
+            }
+
+            /* menyesuaikan tinggi */
+            .ticket-control {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 15px 0;
+            }
+
+            .ticket-control button {
+                background: #1e90ff;
+                color: #fff;
+                border: none;
+                font-size: 20px;
+                font-weight: bold;
+                padding: 4px 10px;
+                border-radius: 10px;
+                cursor: pointer;
+                transition: transform 0.2s ease, background 0.3s ease;
+            }
+
+            .ticket-control button:active {
+                background: #63b3ff;
+                transform: scale(1.1);
+            }
+
+            .ticket-display {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: 15px;
+                font-weight: bold;
+                color: #fff;
+                background: #222;
+                padding: 4px 10px;
+                border-radius: 8px;
+                min-width: 100px;
+                justify-content: center;
+            }
+
+            .ticket-icon {
+                width: 13px;
+                height: 13px;
+                object-fit: contain;
+            }
+        }
+
+        /* History Styles */
+        #history {
+            padding: 30px;
+            text-align: center;
+        }
+
+        #history ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 auto;
+            max-width: 400px;
+            /* biar center & rapi di layar HP */
+        }
+
+        #history li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5px;
+            border-bottom: 1px solid #333;
+            /* garis pemisah */
+            font-size: 10px;
+            text-align: left;
+        }
+
+        #history li span {
+            flex: 1;
+            /* memastikan span mengisi ruang */
+        }
+
+        .history-date {
+            font-size: 0.8em;
+            color: #aaa;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .status {
+            font-weight: bold;
+            text-align: right;
+            /* Status rata kanan */
+        }
+
+        .status.menang {
+            color: #4caf50;
+            /* hijau menang */
+        }
+
+        .status.kalah {
+            color: #f44336;
+            /* merah kalah */
+        }
+
+        .login-links {
+            font-size: 0.8em;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .login-links a {
+            color: #1e90ff;
+            text-decoration: none;
+        }
+
+        .login-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="brand">KuPlay</div>
+        <div class="wallet">
+            <div class="wallet-item" id="coinBtn">
+                <img src="ui/coin.png" alt="Coin">
+                <span id="coin-count">0</span>
+            </div>
+            <div class="wallet-item" id="ticketBtn">
+                <img src="ui/ticket (1).png" alt="Ticket">
+                <span id="ticket-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="page" id="game">
+        <div id="profileInfo">
+            <img id="profileAvatar" src="https://via.placeholder.com/80" alt="Avatar">
+            <h3 id="profileName">Nama Pemain</h3>
+            <p id="profileId"></p>
+            <input type="file" id="avatarInput" accept="image/*" style="display:none;">
+            <div class="logout-btn-container">
+                <button id="logoutBtn" class="logout-btn">Logout</button>
+            </div>
+        </div>
+        <div class="leaderboard" id="leaderboardBtn">
+            <h2>Leaderboard</h2>
+        </div>
+        <div class="games">
+        </div>
+    </div>
+
+    <div id="modals-wrapper">
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <h2 class="modal-title">Login KuPlay</h2>
+                <form id="loginForm">
+                    <input type="email" id="loginEmail" placeholder="Masukkan Email" required>
+                    <input type="password" id="loginPassword" placeholder="Masukkan Kata Sandi" required>
+                    <p class="login-links"><a href="#" onclick="openReset()">Lupa kata sandi?</a></p>
+                    <button type="submit">Login</button>
+                    <p class="login-links">Belum punya akun? <a href="#" onclick="openRegister()">Daftar</a></p>
+                    <p id="loginStatus" style="font-size:0.9em;"></p>
+                </form>
+            </div>
+        </div>
+
+        <div id="registerModal" class="modal">
+            <div class="modal-content">
+                <h2 class="modal-title">Registrasi KuPlay</h2>
+                <form id="registerForm">
+                    <input type="text" id="regName" placeholder="Nama Lengkap" required>
+                    <input type="email" id="regEmail" placeholder="Email" required>
+                    <input type="password" id="regPassword" placeholder="Kata Sandi" required>
+                    <input type="password" id="regPasswordConfirm" placeholder="Konfirmasi Kata Sandi" required>
+                    <button type="submit">Daftar</button>
+                    <p class="login-links">Sudah punya akun? <a href="#" onclick="openLogin()">Login</a></p>
+                    <p id="registerStatus" style="font-size:0.9em;"></p>
+                </form>
+            </div>
+        </div>
+
+        <div id="verifyModal" class="modal">
+            <div class="modal-content">
+                <h2 class="modal-title">Verifikasi Akun</h2>
+                <p>Kode 4 digit telah dikirim ke email Anda.</p>
+                <form id="verifyForm">
+                    <input type="text" id="verifyCode" placeholder="Masukkan Kode" required>
+                    <button type="submit">Verifikasi</button>
+                    <p id="verifyStatus" style="font-size:0.9em;"></p>
+                </form>
+            </div>
+        </div>
+
+        <div id="resetModal" class="modal">
+            <div class="modal-content">
+                <h2 class="modal-title">Reset Kata Sandi</h2>
+                <p>Masukkan email Anda untuk menerima tautan reset kata sandi.</p>
+                <form id="resetForm">
+                    <input type="email" id="resetEmail" placeholder="Masukkan Email" required>
+                    <button type="submit">Kirim Tautan Reset</button>
+                    <p id="resetStatus" style="font-size:0.9em;"></p>
+                </form>
+            </div>
+        </div>
+
+        <div id="changePasswordModal" class="modal">
+            <div class="modal-content">
+                <h2 class="modal-title">Ubah Kata Sandi</h2>
+                <form id="changePasswordForm">
+                    <input type="hidden" id="resetEmailHidden">
+                    <input type="hidden" id="resetTokenHidden">
+                    <input type="password" id="newPassword" placeholder="Kata Sandi Baru" required>
+                    <input type="password" id="confirmNewPassword" placeholder="Konfirmasi Kata Sandi Baru" required>
+                    <button type="submit">Ubah Kata Sandi</button>
+                    <p id="changePasswordStatus" style="font-size:0.9em;"></p>
+                </form>
+            </div>
+        </div>
+
+        <div id="welcomeModal" class="modal">
+            <div class="modal-content">
+                <h2 class="modal-title">Selamat Datang! 🎉</h2>
+                <p>Terima kasih telah bergabung di KuPlay!</p>
+                <p>Sebagai bonus, Anda mendapatkan 50 Coin gratis!</p>
+                <button id="closeWelcomeModal">Mulai Bermain</button>
+            </div>
+        </div>
+
+        <div id="coinModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeCoinModal">&times;</span>
+                <h2 class="modal-title">Top Up Coin</h2>
+                <div class="topup-options-container" id="topupOptionsContainer">
+                </div>
+            </div>
+        </div>
+
+        <div id="paymentModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closePaymentModal">&times;</span>
+                <h2 class="modal-title">Detail Pembayaran</h2>
+                <div id="paymentInitialScreen">
+                    <div class="payment-summary">
+                        <div class="summary-details">
+                            <img src="ui/coin.png" alt="Coin" class="coin-icon">
+                            <span id="selectedCoinAmount"></span>
+                        </div>
+                        <div class="summary-price">
+                            <span class="price-label">Harga:</span>
+                            <span id="selectedPriceValue"></span>
+                        </div>
+                    </div>
+                    <p style="text-align: center; color: #000; font-weight: bold; margin-top: 20px;">Pilih metode pembayaran:</p>
+                    <div class="topup-options-container" id="paymentMethodsContainer" style="margin-top: 10px;">
+                        </div>
+                </div>
+                <div id="paymentDetailScreen" style="display:none;">
+                    <div class="payment-details-container">
+                        <h3>Detail Transfer</h3>
+                        <div class="payment-details">
+                            <div class="detail-item">
+                                <span class="label">Metode Pembayaran</span>
+                                <div class="value">
+                                    <span id="methodName"></span>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Kode Pembayaran</span>
+                                <div class="value">
+                                    <span id="accountNumber"></span>
+                                    <span class="material-symbols-rounded copy-icon"
+                                        data-target="accountNumber">content_copy</span>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Total Pembayaran</span>
+                                <div class="value">
+                                    <span id="paymentNominal"></span>
+                                    <span class="material-symbols-rounded copy-icon"
+                                        data-target="paymentNominal">content_copy</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="payment-instructions">
+                        <h4>Cara Transfer</h4>
+                        <div id="instructionsList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="leaderboardModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeLeaderboardModal">&times;</span>
+                <h4>🏆</h4>
+                <h2>Leaderboard</h2>
+                <ul>
+                    <li><span>Player1</span><img src="ui/reward.png" alt="mendali"
+                            style="width:25px; height:25px; vertical-align:middle; margin-right:5px; margin:-10px;"></span><span>6000</span>
+                    </li>
+                    <li><span>Player2</span><span>5000</span></li>
+                    <li><span>Player3</span><span>4000</span></li>
+                    <li><span>Player4</span><span>3500</span></li>
+                    <li><span>Player5</span><span>3000</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bottom-nav">
+        <div class="nav-item" onclick="showPage('hadiah')">
+            <span class="material-symbols-rounded">featured_seasonal_and_gifts</span>
+        </div>
+        <div class="nav-item" onclick="showPage('game')">
+            <span class="material-symbols-rounded">stadia_controller</span>
+        </div>
+        <div class="nav-item" onclick="showPage('history')">
+            <span class="material-symbols-rounded">overview</span>
+        </div>
+    </footer>
+    <div id="copySuccess" class="copy-success">Berhasil disalin!</div>
+
+    <div class="page" id="hadiah">
+        <h2 class="redeem-title">Redeem Hadiah</h2>
+        <div class="scroll-x">
+        </div>
+        <div class="grid-2">
+        </div>
+    </div>
+
+    <div id="redeemModal" class="redeem-modal">
+        <div class="redeem-modal-inner redeem-item">
+            <span class="redeem-modal-close">&times;</span>
+            <img id="modal-img" class="redeem-img" src="" alt="Hadiah">
+            <div class="redeem-name" id="modal-name"></div>
+            <div class="ticket-control">
+                <button id="minusBtn">−</button>
+                <div class="ticket-display">
+                    <img src="ui/ticket (1).png" alt="Tiket" class="ticket-icon">
+                    <span id="modal-price"></span>
+                </div>
+                <button id="plusBtn">+</button>
+            </div>
+            <button class="redeem-modal-btn" onclick="redeemItem()">Redeem</button>
+            <div class="redeem-link" id="openTerms">Lihat syarat redeem</div>
+        </div>
+    </div>
+
+    <div id="redeemModalSpecial" class="redeem-modal">
+        <div class="redeem-modal-inner redeem-item">
+            <span class="redeem-modal-close">&times;</span>
+            <img id="modal-img-special" class="redeem-img" src="" alt="Hadiah">
+            <div class="redeem-name" id="modal-name-special"></div>
+            <div class="ticket-control">
+                <div class="ticket-display">
+                    <img src="ui/ticket (1).png" alt="Tiket" class="ticket-icon">
+                    <span id="modal-price-special"></span>
+                </div>
+            </div>
+            <button class="redeem-modal-btn" onclick="redeemItemSpecial()">Redeem</button>
+            <div class="redeem-link" id="openTermsSpecial">Lihat syarat redeem</div>
+        </div>
+    </div>
+
+    <div id="termsModal" class="redeem-modal">
+        <div class="redeem-modal-inner">
+            <span class="redeem-modal-close">&times;</span>
+            <h3 style="text-align:center; color:#fff;">Syarat & Ketentuan</h3>
+            <ul class="terms-list" id="termsList">
+            </ul>
+        </div>
+    </div>
+
+    <div id="termsModalSpecial" class="redeem-modal">
+        <div class="redeem-modal-inner">
+            <span class="redeem-modal-close">&times;</span>
+            <h3 style="text-align:center; color:#fff;">Syarat & Ketentuan</h3>
+            <ul class="terms-list" id="termsListSpecial">
+            </ul>
+        </div>
+    </div>
+
+    <div id="redeemSuccessModal" class="modal">
+        <div class="modal-content">
+            <h2 class="modal-title">Redeem Berhasil! 🎉</h2>
+            <p id="redeemSuccessMessage"></p>
+            <button id="closeRedeemSuccessModal">OK</button>
+        </div>
+    </div>
+
+    <div class="page" id="history">
+        <h2>Riwayat Aktivitas</h2>
+        <ul id="historyList">
+            <li>Sedang memuat riwayat...</li>
+        </ul>
+    </div>
+
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbwM_HzBIN9hNH9ni3TQL5rxHSUokMW5L-fLSWfLOPrJVbEksUQ2Y1g-zZ4ympR1LHg90w/exec";
+        const redeemApiUrl = "https://script.google.com/macros/s/AKfycbyMfvXICyfH3c0JmXpIOh3fwBnLeNJBT5EFN9BIEhd_oXZz8jDX9s5cO7dxRLZcNRzn/exec";
+        const HISTORY_API_URL = "https://script.google.com/macros/s/AKfycbxL7pCpIkWh1rVJbnAGibjbkjxpTs_Ah1vTET9EpJXo5jizHN8sYNTet7FMUKEZajst/exec";
+        const GAMES_API_URL = "https://script.google.com/macros/s/AKfycbx1tt5xCXZ-BkCFJOXerN9mZvro1066rDjbVsJzoKPgMrMeHxdrYFG5WYoJjxkTbi74/exec";
+        const LEADERBOARD_API_URL = "https://script.google.com/macros/s/AKfycbxL7pCpIkWh1rVJbnAGibjbkjxpTs_Ah1vTET9EpJXo5jizHN8sYNTet7FMUKEZajst/exec";
+        const TRIPAY_API_URL = "https://script.google.com/macros/s/AKfycbxGZTsfDu94TKbxESZ9-8GY1W6BhL5kj1qlkDHeQdk2H2LWPe_HOI5Wysf0X0SGWW4IPg/exec"; // Ganti dengan URL Apps Script Tripay Anda
+        
+        let tripayTransactionData = null;
+
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function hideModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function openRegister() {
+            hideModal("loginModal");
+            showModal("registerModal");
+        }
+
+        function openLogin() {
+            hideModal("registerModal");
+            hideModal("resetModal");
+            hideModal("changePasswordModal");
+            showModal("loginModal");
+        }
+
+        function openReset() {
+            hideModal("loginModal");
+            showModal("resetModal");
+        }
+
+        function showGamePage() {
+            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            document.getElementById("game").style.display = 'block';
+            hideModal("loginModal");
+            hideModal("registerModal");
+            hideModal("verifyModal");
+            hideModal("resetModal");
+            hideModal("changePasswordModal");
+            hideModal("welcomeModal");
+        }
+
+        async function loadProfile() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const emailParam = urlParams.get('email');
+            const tokenParam = urlParams.get('token');
+
+            if (emailParam && tokenParam) {
+                showModal('changePasswordModal');
+                document.getElementById('resetEmailHidden').value = emailParam;
+                document.getElementById('resetTokenHidden').value = tokenParam;
+            } else {
+                let userId = localStorage.getItem('userId');
+                let playerName = localStorage.getItem('playerName');
+                let playerEmail = localStorage.getItem('playerEmail');
+                let playerAvatar = localStorage.getItem('playerAvatar');
+
+                if (userId && playerName && playerEmail) {
+                    const userData = await getUserData(playerEmail);
+                    if (userData && userData.success) {
+                        updateUIWithUserBalance(userData.user.coins, userData.user.tickets);
+                        document.getElementById('profileId').textContent = userId;
+                        document.getElementById('profileName').textContent = playerName;
+                        if (playerAvatar) {
+                            document.getElementById('profileAvatar').src = playerAvatar;
+                        } else {
+                            document.getElementById('profileAvatar').src = "https://via.placeholder.com/80";
+                        }
+                        showGamePage();
+                        initModal();
+                    } else {
+                        localStorage.removeItem('userId');
+                        localStorage.removeItem('playerName');
+                        localStorage.removeItem('playerEmail');
+                        showModal("loginModal");
+                    }
+                } else {
+                    showModal("loginModal");
+                }
+            }
+        }
+
+        function updateUIWithUserBalance(coins, tickets) {
+            document.getElementById('coin-count').textContent = coins;
+            document.getElementById('ticket-count').textContent = tickets;
+        }
+
+        async function getUserData(email) {
+            const res = await fetch(`${API_URL}?action=getUserData&email=${email}`);
+            const data = await res.json();
+            return data;
+        }
+
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+            localStorage.removeItem('userId');
+            localStorage.removeItem('playerName');
+            localStorage.removeItem('playerEmail');
+            localStorage.removeItem('isNewUser');
+            addHistory("Logout", "Selesai");
+            setTimeout(() => {
+                location.reload();
+            }, 500);
+        });
+
+        document.getElementById("loginForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("loginEmail").value;
+            const password = document.getElementById("loginPassword").value;
+            const loginStatus = document.getElementById("loginStatus");
+
+            const res = await fetch(`${API_URL}?action=login&email=${email}&password=${password}`);
+            const data = await res.json();
+
+            if (data.success) {
+                localStorage.setItem("userId", data.user.id);
+                localStorage.setItem("playerName", data.user.name);
+                localStorage.setItem("playerEmail", data.user.email);
+                localStorage.setItem("isNewUser", "false");
+                loginStatus.style.color = "green";
+                loginStatus.textContent = "Berhasil login";
+                addHistory("Login", "Berhasil");
+                setTimeout(() => {
+                    showGamePage();
+                    loadProfile();
+                }, 1000);
+            } else {
+                loginStatus.style.color = "red";
+                loginStatus.textContent = data.message;
+            }
+        });
+
+        document.getElementById("registerForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const name = document.getElementById("regName").value;
+            const email = document.getElementById("regEmail").value;
+            const password = document.getElementById("regPassword").value;
+            const confirm = document.getElementById("regPasswordConfirm").value;
+            const registerStatus = document.getElementById("registerStatus");
+
+            if (password !== confirm) {
+                registerStatus.style.color = "red";
+                registerStatus.textContent = "Konfirmasi kata sandi tidak cocok";
+                return;
+            }
+
+            const res = await fetch(`${API_URL}?action=register`, {
+                method: "POST",
+                body: JSON.stringify({
+                    name,
+                    email,
+                    password
+                })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                registerStatus.style.color = "green";
+                registerStatus.textContent = "Berhasil registrasi. Silakan verifikasi email.";
+                hideModal("registerModal");
+                showModal("verifyModal");
+                localStorage.setItem("pendingEmail", email);
+                localStorage.setItem("isNewUser", "true");
+            } else {
+                registerStatus.style.color = "red";
+                registerStatus.textContent = data.message;
+            }
+        });
+
+        document.getElementById("verifyForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const code = document.getElementById("verifyCode").value;
+            const email = localStorage.getItem("pendingEmail");
+            const verifyStatus = document.getElementById("verifyStatus");
+
+            verifyStatus.textContent = "Loading...";
+
+            const res = await fetch(`${API_URL}?action=verify&email=${email}&code=${code}`);
+            const data = await res.json();
+
+            if (data.success) {
+                const userRes = await fetch(`${API_URL}?action=getUserData&email=${email}`);
+                const userData = await userRes.json();
+
+                if (userData.success) {
+                    localStorage.setItem("userId", userData.user.id);
+                    localStorage.setItem("playerName", userData.user.name);
+                    localStorage.setItem("playerEmail", userData.user.email);
+                    localStorage.removeItem("pendingEmail");
+                }
+
+                verifyStatus.style.color = "green";
+                verifyStatus.textContent = "Verifikasi berhasil!";
+                addHistory("Registrasi Akun", "Berhasil");
+
+                setTimeout(() => {
+                    showGamePage();
+                    loadProfile();
+                    if (localStorage.getItem("isNewUser") === "true") {
+                        showModal("welcomeModal");
+                        localStorage.removeItem("isNewUser");
+                    }
+                }, 1000);
+            } else {
+                verifyStatus.style.color = "red";
+                verifyStatus.textContent = data.message;
+            }
+        });
+
+        document.getElementById('closeWelcomeModal').addEventListener('click', () => {
+            hideModal('welcomeModal');
+        });
+
+        document.getElementById("resetForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("resetEmail").value;
+            const resetStatus = document.getElementById("resetStatus");
+            resetStatus.textContent = "Loading...";
+
+            const res = await fetch(`${API_URL}?action=sendResetLink&email=${email}`);
+            const data = await res.json();
+
+            if (data.success) {
+                resetStatus.style.color = "green";
+                resetStatus.textContent = "Tautan reset kata sandi telah dikirim ke email Anda.";
+            } else {
+                resetStatus.style.color = "red";
+                resetStatus.textContent = data.message;
+            }
+        });
+
+        document.getElementById("changePasswordForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("resetEmailHidden").value;
+            const token = document.getElementById("resetTokenHidden").value;
+            const newPassword = document.getElementById("newPassword").value;
+            const confirmNewPassword = document.getElementById("confirmNewPassword").value;
+            const changePasswordStatus = document.getElementById("changePasswordStatus");
+
+            if (newPassword !== confirmNewPassword) {
+                changePasswordStatus.style.color = "red";
+                changePasswordStatus.textContent = "Kata sandi tidak cocok.";
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                changePasswordStatus.style.color = "red";
+                changePasswordStatus.textContent = "Kata sandi minimal 6 karakter.";
+                return;
+            }
+
+            changePasswordStatus.textContent = "Loading...";
+
+            const res = await fetch(`${API_URL}?action=updatePassword`, {
+                method: "POST",
+                body: JSON.stringify({
+                    email,
+                    token,
+                    newPassword
+                })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                changePasswordStatus.style.color = "green";
+                changePasswordStatus.textContent = "Kata sandi berhasil diubah!";
+                addHistory("Ubah Kata Sandi", "Berhasil");
+                setTimeout(() => {
+                    openLogin();
+                }, 2000);
+            } else {
+                changePasswordStatus.style.color = "red";
+                changePasswordStatus.textContent = data.message;
+            }
+        });
+
+        const profileAvatarEl = document.getElementById('profileAvatar');
+        const avatarInput = document.getElementById('avatarInput');
+        const coinEl = document.getElementById('coin-count');
+        const ticketEl = document.getElementById('ticket-count');
+        const coinBtn = document.getElementById('coinBtn');
+        const coinModal = document.getElementById('coinModal');
+        const closeCoinModal = document.getElementById('closeCoinModal');
+        const paymentModal = document.getElementById('paymentModal');
+        const closePaymentModal = document.getElementById('closePaymentModal');
+        const leaderboardBtn = document.getElementById('leaderboardBtn');
+        const leaderboardModal = document.getElementById('leaderboardModal');
+        const closeLeaderboardModal = document.getElementById('closeLeaderboardModal');
+        const scrollContainer = document.querySelector(".scroll-x");
+        const gridContainer = document.querySelector(".grid-2");
+        let playerTickets = 0;
+        const modal = document.getElementById('redeemModal');
+        const modalSpecial = document.getElementById('redeemModalSpecial');
+        const redeemSuccessModal = document.getElementById('redeemSuccessModal');
+        const closeRedeemSuccessModal = document.getElementById('closeRedeemSuccessModal');
+        let currentItemCost = 0;
+        let currentItemName = '';
+
+        coinBtn.onclick = () => showModal('coinModal');
+        closeCoinModal.onclick = () => hideModal('coinModal');
+        closePaymentModal.onclick = () => hideModal('paymentModal');
+        leaderboardBtn.onclick = () => showModal('leaderboardModal');
+        closeLeaderboardModal.onclick = () => hideModal('leaderboardModal');
+        closeRedeemSuccessModal.onclick = () => hideModal('redeemSuccessModal');
+
+
+        window.onclick = function (event) {
+            if (event.target == coinModal) hideModal('coinModal');
+            if (event.target == paymentModal) hideModal('paymentModal');
+            if (event.target == leaderboardModal) hideModal('leaderboardModal');
+            if (event.target == redeemSuccessModal) hideModal('redeemSuccessModal');
+            if (event.target == document.getElementById('loginModal') && localStorage.getItem('userId')) hideModal('loginModal');
+            if (event.target == document.getElementById('registerModal') && localStorage.getItem('userId')) hideModal('registerModal');
+            if (event.target == document.getElementById('verifyModal') && localStorage.getItem('userId')) hideModal('verifyModal');
+            if (event.target == document.getElementById('resetModal') && localStorage.getItem('userId')) hideModal('resetModal');
+            if (event.target == document.getElementById('changePasswordModal') && localStorage.getItem('userId')) hideModal('changePasswordModal');
+        }
+
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+            const page = document.getElementById(id);
+            if (page) {
+                page.style.display = 'block';
+                if (id === 'history') {
+                    loadHistory();
+                }
+            }
+        }
+
+        const selectedCoinAmountEl = document.getElementById('selectedCoinAmount');
+        const selectedPriceValueEl = document.getElementById('selectedPriceValue');
+        const paymentInitialScreen = document.getElementById('paymentInitialScreen');
+        const paymentDetailScreen = document.getElementById('paymentDetailScreen');
+        const methodNameEl = document.getElementById('methodName');
+        const accountNumberEl = document.getElementById('accountNumber');
+        const paymentNominalEl = document.getElementById('paymentNominal');
+        const instructionsList = document.getElementById('instructionsList');
+        const copySuccessToast = document.getElementById('copySuccess');
+        const topupOptionsContainer = document.getElementById('topupOptionsContainer');
+        const paymentMethodsContainer = document.getElementById('paymentMethodsContainer');
+        const gamesContainer = document.querySelector('.games');
+
+        let selectedCoinData = {};
+
+        function loadTopUpOptions() {
+            fetch(API_URL + '?action=getTopUpOptions')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        topupOptionsContainer.innerHTML = '';
+                        data.data.forEach(option => {
+                            const div = document.createElement('div');
+                            div.classList.add('topup-option');
+                            div.dataset.coin = option.coin;
+                            div.dataset.price = option.price.toLocaleString('id-ID');
+                            div.innerHTML = `
+                                <div class="topup-header">
+                                    <img src="ui/coin.png" alt="Coin" class="coin-icon">
+                                    <span class="coin-amount">${option.coin} Coin</span>
+                                </div>
+                                <div class="topup-price">
+                                    <span class="price-label">Harga</span>
+                                    <span class="price-value">Rp ${option.price.toLocaleString('id-ID')}</span>
+                                </div>
+                            `;
+                            div.addEventListener('click', () => {
+                                selectedCoinData.coin = option.coin;
+                                selectedCoinData.price = option.price;
+                                selectedCoinAmountEl.textContent = `${selectedCoinData.coin} Coin`;
+                                selectedPriceValueEl.textContent = `Rp ${option.price.toLocaleString('id-ID')}`;
+                                addHistory("Top Up Coin", `Memilih paket ${selectedCoinData.coin} Coin`);
+
+                                hideModal('coinModal');
+                                showModal('paymentModal');
+                                paymentInitialScreen.style.display = 'block';
+                                paymentDetailScreen.style.display = 'none';
+                                loadPaymentMethods(); // Panggil fungsi untuk memuat metode pembayaran dari Tripay
+                            });
+                            topupOptionsContainer.appendChild(div);
+                        });
+                    } else {
+                        console.error('Failed to load top-up options:', data.message);
+                    }
+                })
+                .catch(error => console.error('Error fetching top-up data:', error));
+        }
+
+        function loadPaymentMethods() {
+            paymentMethodsContainer.innerHTML = 'Loading metode pembayaran...';
+
+            fetch(`${TRIPAY_API_URL}?action=getPaymentChannels`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data) {
+                        paymentMethodsContainer.innerHTML = '';
+                        data.data.forEach(channel => {
+                            const button = document.createElement('button');
+                            button.innerHTML = `<img src="${channel.icon}" style="width: 30px; vertical-align: middle; margin-right: 5px;"> ${channel.name}`;
+                            button.onclick = () => createTransaction(channel.code);
+                            paymentMethodsContainer.appendChild(button);
+                        });
+                    } else {
+                        paymentMethodsContainer.innerHTML = '<p style="color:red;text-align:center;">Gagal memuat metode pembayaran.</p>';
+                        console.error('Failed to load payment channels:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching payment channels:', error);
+                    paymentMethodsContainer.innerHTML = '<p style="color:red;text-align:center;">Koneksi bermasalah.</p>';
+                });
+        }
+
+        async function createTransaction(paymentChannel) {
+            const userId = localStorage.getItem('userId');
+            const userEmail = localStorage.getItem('playerEmail');
+            const playerName = localStorage.getItem('playerName');
+
+            if (!userId || !userEmail) {
+                alert("Anda harus login untuk melanjutkan.");
+                return;
+            }
+
+            addHistory("Top Up Coin", `Membuat transaksi dengan ${paymentChannel}`);
+
+            try {
+                const response = await fetch(`${TRIPAY_API_URL}?action=createTransaction`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        method: paymentChannel,
+                        amount: selectedCoinData.price,
+                        customer_name: playerName,
+                        customer_email: userEmail,
+                        customer_id: userId
+                    }),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    tripayTransactionData = data.data;
+                    showPaymentDetailsTripay(tripayTransactionData);
+                    addHistory("Top Up Coin", `Transaksi dibuat: ${data.data.reference}`);
+                } else {
+                    alert(`Gagal membuat transaksi: ${data.message}`);
+                    console.error(data.message);
+                    addHistory("Top Up Coin", `Transaksi gagal: ${data.message}`);
+                }
+            } catch (error) {
+                console.error('Error creating transaction:', error);
+                alert('Terjadi kesalahan saat membuat transaksi.');
+                addHistory("Top Up Coin", `Transaksi gagal: kesalahan koneksi`);
+            }
+        }
+
+        function showPaymentDetailsTripay(data) {
+            document.getElementById('methodName').textContent = data.payment_name;
+            document.getElementById('accountNumber').textContent = data.pay_code || data.pay_url;
+            document.getElementById('paymentNominal').textContent = `Rp ${data.amount.toLocaleString('id-ID')}`;
+            
+            const instructionsList = document.getElementById('instructionsList');
+            instructionsList.innerHTML = '';
+
+            if (data.instructions && data.instructions.length > 0) {
+                data.instructions.forEach(instruction => {
+                    const heading = document.createElement('h5');
+                    heading.textContent = instruction.title;
+                    const steps = document.createElement('ol');
+                    instruction.steps.forEach(step => {
+                        const li = document.createElement('li');
+                        li.textContent = step;
+                        steps.appendChild(li);
+                    });
+                    instructionsList.appendChild(heading);
+                    instructionsList.appendChild(steps);
+                });
+            }
+
+            paymentInitialScreen.style.display = 'none';
+            paymentDetailScreen.style.display = 'block';
+        }
+
+        document.querySelectorAll('.copy-icon').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.dataset.target;
+                const targetElement = document.getElementById(targetId);
+                const textToCopy = targetElement.textContent;
+
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showCopyToast();
+                }).catch(err => {
+                    console.error('Gagal menyalin:', err);
+                });
+            });
+        });
+
+        function showCopyToast() {
+            copySuccessToast.style.opacity = '1';
+            setTimeout(() => {
+                copySuccessToast.style.opacity = '0';
+            }, 2000);
+        }
+
+        fetch(redeemApiUrl)
+            .then(res => res.json())
+            .then(data => {
+                scrollContainer.innerHTML = "";
+                data.scroll.forEach(item => {
+                    scrollContainer.innerHTML += `
+                        <div class="redeem-item"
+                             data-nama="${item.nama}"
+                             data-img="${item.gambar}"
+                             data-harga="${item.harga}"
+                             data-syarat="${item.syarat}">
+                          <img src="${item.gambar}" alt="${item.nama}" class="redeem-img">
+                          <div class="redeem-name">${item.nama}</div>
+                        </div>
+                    `;
+                });
+
+                gridContainer.innerHTML = "";
+                data.grid.forEach(item => {
+                    gridContainer.innerHTML += `
+                        <div class="redeem-item"
+                             data-nama="${item.nama}"
+                             data-img="${item.gambar}"
+                             data-harga="${item.harga}"
+                             data-syarat="${item.syarat}">
+                          <img src="${item.gambar}" alt="${item.nama}" class="redeem-img">
+                          <div class="redeem-name">${item.nama}</div>
+                        </div>
+                    `;
+                });
+
+                initModal();
+            })
+            .catch(error => console.error("Error fetching data:", error));
+
+        function initModal() {
+            playerTickets = parseInt(document.getElementById('ticket-count').textContent);
+
+            document.querySelectorAll('.scroll-x .redeem-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const itemPrice = parseInt(item.dataset.harga, 10);
+                    let currentTicketAmount = itemPrice;
+                    document.getElementById('modal-name').textContent = item.dataset.nama;
+                    document.getElementById('modal-img').src = item.dataset.img;
+                    document.getElementById('modal-price').textContent = currentTicketAmount;
+                    const termsList = document.getElementById('termsList');
+                    const syaratArr = item.dataset.syarat.split(/\r?\n|\|/);
+                    termsList.innerHTML = syaratArr
+                        .map(s => s.trim())
+                        .filter(s => s.length > 0)
+                        .map(s => `<li>${s}</li>`)
+                        .join("");
+
+                    currentItemCost = currentTicketAmount;
+                    currentItemName = item.dataset.nama;
+
+                    modal.style.display = 'flex';
+                    setTimeout(() => modal.classList.add('show'), 10);
+                    const ticketDisplay = document.getElementById('modal-price');
+                    const plusBtn = document.getElementById('plusBtn');
+                    const minusBtn = document.getElementById('minusBtn');
+                    const step = itemPrice;
+
+                    plusBtn.onclick = () => {
+                        const newAmount = currentTicketAmount + step;
+                        if (newAmount <= playerTickets) {
+                            currentTicketAmount = newAmount;
+                            ticketDisplay.textContent = currentTicketAmount;
+                            currentItemCost = newAmount;
+                        }
+                    };
+
+                    minusBtn.onclick = () => {
+                        const newAmount = currentTicketAmount - step;
+                        if (newAmount >= itemPrice) {
+                            currentTicketAmount = newAmount;
+                            ticketDisplay.textContent = currentTicketAmount;
+                            currentItemCost = newAmount;
+                        }
+                    };
+                });
+            });
+
+            document.querySelectorAll('.grid-2 .redeem-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const itemPrice = parseInt(item.dataset.harga, 10);
+                    let currentTicketAmount = itemPrice;
+                    document.getElementById('modal-name-special').textContent = item.dataset.nama;
+                    document.getElementById('modal-img-special').src = item.dataset.img;
+                    document.getElementById('modal-price-special').textContent = currentTicketAmount;
+                    const termsListSpecial = document.getElementById('termsListSpecial');
+                    const syaratArr2 = item.dataset.syarat.split(/\r?\n|\|/);
+                    termsListSpecial.innerHTML = syaratArr2
+                        .map(s => s.trim())
+                        .filter(s => s.length > 0)
+                        .map(s => `<li>${s}</li>`)
+                        .join("");
+
+                    currentItemCost = currentTicketAmount;
+                    currentItemName = item.dataset.nama;
+
+                    modalSpecial.style.display = 'flex';
+                    setTimeout(() => modalSpecial.classList.add('show'), 10);
+                    const ticketDisplaySpecial = document.getElementById('modal-price-special');
+
+                    const plusBtnSpecial = modalSpecial.querySelector('#plusBtn');
+                    const minusBtnSpecial = modalSpecial.querySelector('#minusBtn');
+                    const step = itemPrice;
+
+                    if (plusBtnSpecial) {
+                        plusBtnSpecial.onclick = () => {
+                            const newAmount = currentTicketAmount + step;
+                            if (newAmount <= playerTickets) {
+                                currentTicketAmount = newAmount;
+                                ticketDisplaySpecial.textContent = currentTicketAmount;
+                                currentItemCost = newAmount;
+                            }
+                        };
+                    }
+
+                    if (minusBtnSpecial) {
+                        minusBtnSpecial.onclick = () => {
+                            const newAmount = currentTicketAmount - step;
+                            if (newAmount >= itemPrice) {
+                                currentTicketAmount = newAmount;
+                                ticketDisplaySpecial.textContent = currentTicketAmount;
+                                currentItemCost = newAmount;
+                            }
+                        };
+                    }
+                });
+            });
+        }
+
+        async function redeemItem() {
+            const userId = localStorage.getItem('userId');
+            const userTickets = parseInt(document.getElementById('ticket-count').textContent, 10);
+
+            if (!userId) {
+                alert("Anda harus login untuk menukarkan hadiah.");
+                return;
+            }
+
+            if (userTickets < currentItemCost) {
+                alert("Tiket Anda tidak cukup untuk menukarkan hadiah ini.");
+                addHistory(`Redeem Gagal: ${currentItemName}`, `Tiket tidak cukup. Dibutuhkan ${currentItemCost}, tersedia ${userTickets}`);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${redeemApiUrl}?action=redeem&userId=${userId}&cost=${currentItemCost}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const newTicketBalance = userTickets - currentItemCost;
+                    document.getElementById('ticket-count').textContent = newTicketBalance;
+                    document.getElementById('redeemSuccessMessage').textContent = `Berhasil menukarkan ${currentItemCost} tiket untuk ${currentItemName}!`;
+
+                    hideModal('redeemModal');
+                    hideModal('redeemModalSpecial');
+                    showModal('redeemSuccessModal');
+                    addHistory(`Redeem Berhasil: ${currentItemName}`, `Menukarkan ${currentItemCost} tiket`);
+                } else {
+                    alert(`Redeem gagal: ${data.message}`);
+                    addHistory(`Redeem Gagal: ${currentItemName}`, `Gagal mengurangi tiket: ${data.message}`);
+                }
+            } catch (error) {
+                console.error("Error redeeming item:", error);
+                alert("Terjadi kesalahan saat menukarkan hadiah. Silakan coba lagi.");
+                addHistory(`Redeem Gagal: ${currentItemName}`, `Kesalahan koneksi atau server`);
+            }
+        }
+
+        async function redeemItemSpecial() {
+            redeemItem();
+        }
+
+        document.getElementById('openTerms').addEventListener('click', () => {
+            const termsModal = document.getElementById('termsModal');
+            termsModal.style.display = 'flex';
+            setTimeout(() => termsModal.classList.add('show'), 10);
+        });
+
+        document.getElementById('openTermsSpecial').addEventListener('click', () => {
+            const termsModal = document.getElementById('termsModalSpecial');
+            termsModal.style.display = 'flex';
+            setTimeout(() => termsModal.classList.add('show'), 10);
+        });
+
+        document.querySelectorAll('.redeem-modal').forEach(modalElement => {
+            const closeBtn = modalElement.querySelector('.redeem-modal-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    modalElement.classList.remove('show');
+                    setTimeout(() => modalElement.style.display = 'none', 300);
+                });
+            }
+            window.addEventListener('click', e => {
+                if (e.target === modalElement) {
+                    modalElement.classList.remove('show');
+                    setTimeout(() => modalElement.style.display = 'none', 300);
+                }
+            });
+        });
+
+        document.getElementById('profileAvatar').addEventListener('click', function () {
+            document.getElementById('avatarInput').click();
+        });
+
+        document.getElementById('avatarInput').addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onloadend = function () {
+                const dataUrl = reader.result;
+                localStorage.setItem('playerAvatar', dataUrl);
+                document.getElementById('profileAvatar').src = dataUrl;
+                alert("Avatar berhasil diubah!");
+            };
+            reader.readAsDataURL(file);
+        });
+
+        async function loadHistory() {
+            const historyList = document.getElementById("historyList");
+            const userId = localStorage.getItem("userId");
+
+            if (!userId) {
+                historyList.innerHTML = `<li>Anda harus login untuk melihat riwayat.</li>`;
+                return;
+            }
+
+            historyList.innerHTML = `<li>Sedang memuat riwayat...</li>`;
+
+            try {
+                const response = await fetch(`${HISTORY_API_URL}?action=getHistory`);
+                const data = await response.json();
+
+                if (data.success) {
+                    const userHistory = data.history.filter(item => item['ID User'] === userId);
+                    if (userHistory.length > 0) {
+                        historyList.innerHTML = "";
+                        userHistory.forEach(item => {
+                            const li = document.createElement("li");
+                            const statusClass = item['Status'].includes("Berhasil") || item['Status'].includes("Menang") || item['Status'].includes("+") ? "menang" : "kalah";
+                            li.innerHTML = `
+                                <div>
+                                    <span>${item['Aktivitas']}</span>
+                                    <span class="history-date">${item['Tanggal']}</span>
+                                </div>
+                                <span class="status ${statusClass}">${item['Status']}</span>
+                            `;
+                            historyList.appendChild(li);
+                        });
+                    } else {
+                        historyList.innerHTML = `<li>Belum ada riwayat aktivitas.</li>`;
+                    }
+                } else {
+                    historyList.innerHTML = `<li>Gagal memuat riwayat: ${data.message}</li>`;
+                }
+            } catch (error) {
+                console.error("Error loading history:", error);
+                historyList.innerHTML = `<li>Terjadi kesalahan saat memuat riwayat.</li>`;
+            }
+        }
+
+        async function addHistory(aktivitas, status) {
+            const userId = localStorage.getItem("userId");
+            const userName = localStorage.getItem("playerName");
+            const userEmail = localStorage.getItem("playerEmail");
+
+            if (!userId || !userName || !userEmail) {
+                console.error("Informasi pengguna tidak lengkap. Tidak dapat menambahkan riwayat.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${HISTORY_API_URL}?action=addHistory`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "text/plain",
+                    },
+                    body: JSON.stringify({
+                        userId,
+                        userName,
+                        userEmail,
+                        aktivitas,
+                        status,
+                    }),
+                });
+
+                const data = await response.json();
+                console.log("Riwayat ditambahkan:", data);
+            } catch (error) {
+                console.error("Gagal menambahkan riwayat:", error);
+            }
+        }
+
+        function recordGameResult(result) {
+            const aktivitas = "Bermain Game Flying Ball";
+            const status = result === "win" ? "Menang" : "Kalah";
+            addHistory(aktivitas, status);
+            if (document.getElementById('history').style.display === 'block') {
+                loadHistory();
+            }
+        }
+
+        async function loadGames() {
+            try {
+                const response = await fetch(GAMES_API_URL);
+                const data = await response.json();
+
+                if (data.success) {
+                    gamesContainer.innerHTML = '';
+                    data.data.forEach(game => {
+                        const gameCard = document.createElement('div');
+                        gameCard.classList.add('game-card');
+                        gameCard.innerHTML = `
+                            <img src="${game.URLgambar}" alt="${game.Namagame}">
+                            <h3>${game.Namagame}</h3>
+                        `;
+                        gameCard.addEventListener('click', () => {
+                            window.location.href = game.URLgame;
+                        });
+                        gamesContainer.appendChild(gameCard);
+                    });
+                } else {
+                    console.error('Gagal memuat daftar game:', data.message);
+                    gamesContainer.innerHTML = `<p style="color:red;text-align:center;">Gagal memuat game.</p>`;
+                }
+            } catch (error) {
+                console.error('Error fetching game data:', error);
+                gamesContainer.innerHTML = `<p style="color:red;text-align:center;">Koneksi bermasalah.</p>`;
+            }
+        }
+        
+        leaderboardBtn.onclick = async () => {
+            const leaderboardList = document.querySelector('#leaderboardModal ul');
+            leaderboardList.innerHTML = '<li>Memuat data...</li>';
+
+            try {
+                const response = await fetch(`${LEADERBOARD_API_URL}?action=getLeaderboard`);
+                const data = await response.json();
+
+                if (data.success && data.data.length > 0) {
+                    leaderboardList.innerHTML = '';
+                    data.data.forEach((player, index) => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<span>${player.name}</span><span>${player.score}</span>`;
+                        if (index === 0) {
+                            li.innerHTML = `<span>${player.name}</span><img src="ui/reward.png" alt="mendali" style="width:25px; height:25px; vertical-align:middle; margin-right:5px; margin:-10px;"></span><span>${player.score}</span>`;
+                        }
+                        leaderboardList.appendChild(li);
+                    });
+                } else {
+                    leaderboardList.innerHTML = '<li>Gagal memuat leaderboard.</li>';
+                }
+            } catch (error) {
+                console.error("Error fetching leaderboard:", error);
+                leaderboardList.innerHTML = '<li>Terjadi kesalahan saat memuat data.</li>';
+            }
+
+            showModal('leaderboardModal');
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProfile();
+            loadTopUpOptions();
+            loadGames();
+        });
+    </script>
+</body>
+
+</html>
